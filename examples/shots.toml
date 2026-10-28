@@ -1,0 +1,43 @@
+# photoreal render examples/shots.toml --comfy http://<your-comfy-host>:8188
+#
+# Pass 1 prompt = subject + scene. Pass 2 (face fix) = subject + face + scene.
+# Write scenes in short, casual phrases, the way you'd describe a friend's photo.
+# Describe the camera ("photographed by a friend at eye level"): without it the model tends
+# toward a close, from-above selfie.
+
+[defaults]
+seeds = [101, 102]
+width = 1152          # 2:3 portrait
+height = 1728
+face_denoise = 0.5    # 0.3 keeps pass 1's face, 0.6+ follows the face prompt more
+
+[[shot]]
+name = "cafe-woman"
+subject = "30 year old woman, shoulder-length wavy auburn hair, fair skin with light freckles, slim build, small silver stud earrings, minimal makeup"
+face = "hazel eyes, soft arched brows, straight nose, natural lips"
+scene = "sitting at an outdoor café table, cream cable knit sweater tucked into high-waisted vintage jeans, holding an iced coffee, golden hour, photographed by a friend at eye level, head to knees, warm smile, looking straight at the camera"
+
+[shot.video]
+motion = "she breathes softly and blinks slowly, a small natural smile forms, hair moves slightly in the breeze, camera completely still, no head rotation"
+
+[[shot]]
+name = "trail-man"
+subject = "35 year old man, short dark curly hair, light stubble, medium brown skin, athletic build"
+face = "dark brown eyes, thick brows, strong jaw, relaxed expression"
+scene = "standing on a hiking trail overlook, olive field jacket over a grey t-shirt, backpack straps on his shoulders, overcast soft light, pine forest and mountains behind him, photographed by a friend a few steps away, waist up, slight smile, looking just off camera"
+
+[shot.video]
+motion = "he breathes steadily and glances toward the camera, wind moves his jacket slightly, camera completely still"
+length = 49
+
+[[shot]]
+name = "kitchen-woman"
+subject = "45 year old woman, grey-streaked black hair in a low bun, warm tan skin, medium build, reading glasses pushed up on her head"
+face = "brown eyes, laugh lines, natural brows"
+scene = "leaning on a kitchen counter in the morning, oversized linen shirt, mug of tea in both hands, window light from the side, plants on the windowsill, candid phone photo, chest up, mid-laugh"
+
+[[shot]]
+name = "street-man"
+subject = "24 year old man, blond undercut, pale skin, lean build, small silver hoop in one ear"
+face = "blue eyes, light brows, narrow nose"
+scene = "walking across a city crosswalk at night, black bomber jacket, neon shop signs and wet pavement reflections, photographed from the curb, waist up, neutral expression, looking at the camera"

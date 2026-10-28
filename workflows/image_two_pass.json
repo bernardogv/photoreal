@@ -1,0 +1,819 @@
+{
+  "last_node_id": 16,
+  "last_link_id": 22,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            2,
+            11
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "gonzalomoKrea2_v20_fp8.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        260
+      ],
+      "size": [
+        380,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            3,
+            12,
+            13
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_4b_fp8_scaled.safetensors",
+        "krea2",
+        "default"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        410
+      ],
+      "size": [
+        380,
+        58
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            8,
+            14
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "wan_2.1_vae.safetensors"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "pos": [
+        430,
+        0
+      ],
+      "size": [
+        520,
+        300
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "Pass 1: person + scene, NO face details (face phrases pull the camera into a close selfie framing)",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            4,
+            5
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "30 year old woman, shoulder-length wavy auburn hair, fair skin with light freckles, slim build, small silver stud earrings, minimal makeup, sitting at an outdoor café table, cream cable knit sweater tucked into high-waisted vintage jeans, holding an iced coffee, golden hour, photographed by a friend at eye level, head to knees, warm smile with lips slightly parted, looking straight at the camera"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "ConditioningZeroOut",
+      "pos": [
+        430,
+        350
+      ],
+      "size": [
+        320,
+        26
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "title": "Negative (zeroed — cfg 1)",
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            6
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConditioningZeroOut"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 7,
+      "type": "EmptySD3LatentImage",
+      "pos": [
+        430,
+        440
+      ],
+      "size": [
+        320,
+        106
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            7
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptySD3LatentImage"
+      },
+      "widgets_values": [
+        1152,
+        1728,
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "type": "KSampler",
+      "pos": [
+        1000,
+        0
+      ],
+      "size": [
+        320,
+        262
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 2
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 5
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 6
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            9
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        9101,
+        "fixed",
+        8,
+        1.0,
+        "euler",
+        "beta",
+        1.0
+      ]
+    },
+    {
+      "id": 9,
+      "type": "VAEDecode",
+      "pos": [
+        1000,
+        310
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 9
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            10,
+            19
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "CLIPTextEncode",
+      "pos": [
+        430,
+        600
+      ],
+      "size": [
+        520,
+        300
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "title": "Pass 2 (face fix): full description incl. face + the same scene",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            15,
+            16
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "30 year old woman, shoulder-length wavy auburn hair, fair skin with light freckles, slim build, small silver stud earrings, minimal makeup, hazel eyes, soft arched brows, straight nose, natural lips, sitting at an outdoor café table, cream cable knit sweater tucked into high-waisted vintage jeans, holding an iced coffee, golden hour, photographed by a friend at eye level, head to knees, warm smile with lips slightly parted, looking straight at the camera"
+      ]
+    },
+    {
+      "id": 12,
+      "type": "ConditioningZeroOut",
+      "pos": [
+        430,
+        950
+      ],
+      "size": [
+        320,
+        26
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "Negative (zeroed — cfg 1)",
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            17
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConditioningZeroOut"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 13,
+      "type": "UltralyticsDetectorProvider",
+      "pos": [
+        1000,
+        420
+      ],
+      "size": [
+        320,
+        78
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BBOX_DETECTOR",
+          "type": "BBOX_DETECTOR",
+          "links": [
+            18
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "SEGM_DETECTOR",
+          "type": "SEGM_DETECTOR",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltralyticsDetectorProvider"
+      },
+      "widgets_values": [
+        "bbox/face_yolov8m.pt"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "BboxDetectorSEGS",
+      "pos": [
+        1000,
+        550
+      ],
+      "size": [
+        320,
+        210
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bbox_detector",
+          "type": "BBOX_DETECTOR",
+          "link": 18
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SEGS",
+          "type": "SEGS",
+          "links": [
+            21
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BboxDetectorSEGS"
+      },
+      "widgets_values": [
+        0.5,
+        10,
+        3.0,
+        10,
+        "all"
+      ]
+    },
+    {
+      "id": 15,
+      "type": "ImpactSEGSOrderedFilter",
+      "pos": [
+        1000,
+        810
+      ],
+      "size": [
+        320,
+        150
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "title": "Largest face only (otherwise bystanders get the subject's face)",
+      "inputs": [
+        {
+          "name": "segs",
+          "type": "SEGS",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "filtered_SEGS",
+          "type": "SEGS",
+          "links": [
+            22
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "remained_SEGS",
+          "type": "SEGS",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImpactSEGSOrderedFilter"
+      },
+      "widgets_values": [
+        "area(=w*h)",
+        true,
+        0,
+        1
+      ]
+    },
+    {
+      "id": 16,
+      "type": "DetailerForEach",
+      "pos": [
+        1370,
+        0
+      ],
+      "size": [
+        360,
+        520
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "title": "Face fix: redraw the face crop at denoise 0.5 with the pass-2 prompt",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 10
+        },
+        {
+          "name": "segs",
+          "type": "SEGS",
+          "link": 22
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 11
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 13
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 14
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 16
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            20
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DetailerForEach"
+      },
+      "widgets_values": [
+        768,
+        true,
+        1024,
+        9101,
+        "fixed",
+        8,
+        1.0,
+        "euler",
+        "beta",
+        0.5,
+        8,
+        true,
+        true,
+        "",
+        1,
+        false,
+        20,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 10,
+      "type": "SaveImage",
+      "pos": [
+        1780,
+        0
+      ],
+      "size": [
+        320,
+        270
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 20
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "two_pass"
+      ]
+    }
+  ],
+  "links": [
+    [
+      2,
+      1,
+      0,
+      8,
+      0,
+      "MODEL"
+    ],
+    [
+      3,
+      3,
+      0,
+      5,
+      0,
+      "CLIP"
+    ],
+    [
+      4,
+      5,
+      0,
+      6,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      5,
+      5,
+      0,
+      8,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      6,
+      6,
+      0,
+      8,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      7,
+      7,
+      0,
+      8,
+      3,
+      "LATENT"
+    ],
+    [
+      8,
+      4,
+      0,
+      9,
+      1,
+      "VAE"
+    ],
+    [
+      9,
+      8,
+      0,
+      9,
+      0,
+      "LATENT"
+    ],
+    [
+      10,
+      9,
+      0,
+      16,
+      0,
+      "IMAGE"
+    ],
+    [
+      11,
+      1,
+      0,
+      16,
+      2,
+      "MODEL"
+    ],
+    [
+      12,
+      3,
+      0,
+      11,
+      0,
+      "CLIP"
+    ],
+    [
+      13,
+      3,
+      0,
+      16,
+      3,
+      "CLIP"
+    ],
+    [
+      14,
+      4,
+      0,
+      16,
+      4,
+      "VAE"
+    ],
+    [
+      15,
+      11,
+      0,
+      12,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      16,
+      11,
+      0,
+      16,
+      5,
+      "CONDITIONING"
+    ],
+    [
+      17,
+      12,
+      0,
+      16,
+      6,
+      "CONDITIONING"
+    ],
+    [
+      18,
+      13,
+      0,
+      14,
+      0,
+      "BBOX_DETECTOR"
+    ],
+    [
+      19,
+      9,
+      0,
+      14,
+      1,
+      "IMAGE"
+    ],
+    [
+      20,
+      16,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ],
+    [
+      21,
+      14,
+      0,
+      15,
+      0,
+      "SEGS"
+    ],
+    [
+      22,
+      15,
+      0,
+      16,
+      1,
+      "SEGS"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}
