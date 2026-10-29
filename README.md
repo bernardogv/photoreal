@@ -7,6 +7,16 @@ from a plain TOML shot list.
 photoreal render examples/shots.toml --comfy http://my-gpu-box:8188
 ```
 
+<p>
+  <img src="docs/img/chef.jpg" width="24%" alt="chef plating a dish in a restaurant kitchen">
+  <img src="docs/img/fisherman.jpg" width="24%" alt="older fisherman on a dock at dawn">
+  <img src="docs/img/studio-artist.jpg" width="24%" alt="artist on a stool in a sunlit studio">
+  <img src="docs/img/trail-man.jpg" width="24%" alt="man on a hiking trail overlook">
+</p>
+
+All made-up people, each the only seed rendered for its shot, straight out of the CLI with no
+retouching. About a minute each on one GPU.
+
 For every shot × seed you get:
 
 | file | what it is |
@@ -29,6 +39,14 @@ So the face is split off:
    `subject + face + scene`. Half the noise is enough to set the eyes, brows and skin, but not
    enough to move the head or change the light on it.
 
+<p>
+  <img src="docs/img/face-before.jpg" width="300" alt="face after pass 1">
+  <img src="docs/img/face-after.jpg" width="300" alt="same face after the pass 2 face fix">
+</p>
+
+Pass 1 (left) and the face fix (right), same frame: the eyes sharpen, the brows take the
+arch from `face`, and the hair, light and head position don't move.
+
 Two details matter:
 
 - **Largest face only.** A detailer that redraws every face gives everyone in the background
@@ -41,6 +59,10 @@ Two details matter:
 Wan 2.2 image-to-video 14B (high-noise then low-noise expert, lightx2v 4-step LoRAs, 4 steps,
 cfg 1) animates the final still at 720×1088, 16 fps. Keep the motion small: blinks, breathing,
 hair in the wind, a still camera. Big head turns are where the face drifts away from the still.
+
+<img src="docs/img/cafe-woman-clip.gif" width="300" alt="3 second clip animated from the café still">
+
+About 4 minutes per clip on one GPU.
 
 ## Shot list
 
